@@ -13,15 +13,44 @@ routers.use(cors())
 routers.post('/', cors(), async (req, res) => {
     const { cracha } = req.body;
 
+    // campo CRACHA é obrigatório
     if (!cracha) {
-        return res.status(422).json('Campo nome é obrigatório')
+        return res.status(422).json({ Msg: 'Campo nome é obrigatório' })
     }
+
+    //verificando se o CRACHA já foi inserido
+    const crachaRegistrado = await prisma.chamada.findMany({
+        where: {
+            cracha: cracha,
+            dataCriacao: {
+                gte: new Date(format(new Date(), "yyyy-MM-dd"))
+            }
+        }
+    })
+
+    if (crachaRegistrado != "") {
+        return res.status(422).json({ Msg: `Chamada já inserida para o número ${cracha}` })
+    }
+
+
+
+     //verificando se o CRACHA existe na tabela de OBREIROS
+     const crachaExiste = await prisma.obreiros.findMany({
+        where: {
+            cracha: cracha,
+        }
+    })
+
+    if (crachaExiste == "") {
+        return res.status(422).json({ Msg: `Crachá número ${cracha} não existe` })
+    }
+
     // Variavel hora vai receber o valor das variáveis HORA_REUNIAO colocadas no arquivo .env
     // Se no momento da inserção a hora for menor que 6:30 damanhã vaiar a HORA_REUNIAO_1
     var hora = format(new Date(), 'HH:mm:ss') <= '06:30:00' ? process.env.HORA_REUNIAO_1 : process.env.HORA_REUNIAO_2
     // Vendo a hora pra ver se é PRESENTE ou ATRASADO
     var valorStatus = format(new Date(), 'HH:mm:ss') <= hora ? 'Presente' : 'Atrasado'
-    
+
     try {
         const result = await prisma.chamada.create({
             data: {
@@ -68,7 +97,7 @@ routers.get('/:id', async (req, res) => {
 //PUT by ID
 routers.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { cracha,status,dataCriacao} = req.body;
+    const { cracha, status, dataCriacao } = req.body;
     try {
         const intId = parseInt(id);
         const numChamada = await prisma.chamada.findUnique({ where: { id: intId } });

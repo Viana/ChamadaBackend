@@ -3,7 +3,7 @@ CREATE TABLE "Chamada" (
     "id" SERIAL NOT NULL,
     "cracha" INTEGER NOT NULL,
     "status" TEXT NOT NULL,
-    "dataCriacao" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "dataCriacao" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Chamada_pkey" PRIMARY KEY ("id")
 );

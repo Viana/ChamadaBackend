@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 routers.use(cors())
 
 //POST
-// routers.options('//:id', cors())
+routers.options('/:id', cors())
 routers.post('/', cors(), async (req, res) => {
     const { nome, cracha } = req.body;
 
@@ -46,8 +46,7 @@ routers.get('/:id', async (req, res) => {
         const intId = parseInt(id);
         const obreiro = await prisma.obreiros.findUnique({ where: { id: intId } });
         if (!obreiro) {
-            res.status(422).json({ message: 'Obreiro não encontrado!' })
-            return
+            return res.status(422).json({ message: 'Obreiro não encontrado!' })
         }
         return res.status(200).json(obreiro)
 
@@ -55,6 +54,26 @@ routers.get('/:id', async (req, res) => {
         res.status(404).json({ error: error })
     }
 })
+
+//GET by CRACHA
+routers.get('/cracha/:cracha', async (req, res) => {
+    const { cracha } = req.params;
+    try {
+        //verificando se o CRACHA existe na tabela de OBREIROS
+        const crachaExiste = await prisma.obreiros.findMany({
+            where: {
+                cracha: parseInt(cracha),
+            }
+        })
+        if (crachaExiste == "") {
+            return res.status(422).json({ Msg: `Crachá número ${cracha} não existe` })
+        }
+        return res.status(200).json(crachaExiste)
+    } catch (error) {
+        res.status(404).json({ error: error })
+    } 
+})
+
 
 //PUT by ID
 routers.put('/:id', async (req, res) => {
