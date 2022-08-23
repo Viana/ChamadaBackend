@@ -1,14 +1,11 @@
 const express = require('express')
-const cors = require("cors");
+
 const { PrismaClient } = require('@prisma/client');
 const routers = express.Router()
-
 const prisma = new PrismaClient();
-routers.use(cors())
 
 //POST
-routers.options('/:id', cors())
-routers.post('/', cors(), async (req, res) => {
+routers.post('/', async (req, res) => {
     const { nome, cracha } = req.body;
 
     if (!nome) {

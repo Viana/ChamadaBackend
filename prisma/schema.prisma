@@ -10,12 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User{
+  id Int @id @default(autoincrement())
+  nome String
+  email String @unique
+  senha String
+  profileImage String?
+  dataCriacao DateTime @default(now())
+}
+
 model Chamada{
   id Int @id @default(autoincrement())
   cracha Int
   status String
   dataCriacao DateTime
 }
+
 model Obreiros{
   id Int @id @default(autoincrement())
   nome String

@@ -1,22 +1,17 @@
 const express = require('express');
-
+require('dotenv').config();
+const cors = require("cors");
 const app = express();
+const port = process.env.PORT
 
-app.use(
-    express.urlencoded({
-        extended: true,
-    })
-)
+// configuração Json
+app.use(express.urlencoded({ extended: true, }))
 app.use(express.json());
 
-const obreirosRouters = require('./routers/ObreirosRouters');
-app.use('/obreiros',obreirosRouters);
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
 
-const chamadaRouters = require('./routers/ChamadaRouters');
-app.use('/chamada',chamadaRouters);
+const router = require('./routers/Router.js')
 
-app.get("/health", (req, res) => {
-    return res.status(200).json("UP")
-})
+app.use(router);
 
-app.listen(3001, () => console.log("Serevr UP port 3001"))
+app.listen(port, () => console.log(`Serevr UP port ${port}`))
