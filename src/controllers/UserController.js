@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const generateToken = (id) => {
     return jwt.sign({ id }, jwtSecret, {
-        expiresIn: "1d",
+        expiresIn: "2h",
     });
 };
 

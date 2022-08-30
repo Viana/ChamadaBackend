@@ -4,7 +4,9 @@ const userCreateValidation = () => {
     return [
         body("nome")
             .isString()
-            .withMessage("O nome é obrigatório."),
+            .withMessage("O nome é obrigatório.")
+            .isLength({ min: 3 })
+            .withMessage("Tamanho do nome inválido."),
         body("email")
             .isString()
             .withMessage("O e-mail é obrigatório.")
@@ -15,7 +17,7 @@ const userCreateValidation = () => {
             .withMessage("A senha é obrigatória.")
             .isLength({ min: 6 })
             .withMessage("A senha precisa ter no mínimo 6 caracteres."),
-        body("confirmsenha")
+        body("confirmSenha")
             .isString()
             .withMessage("A senha é obrigatória.")
             .custom((value, { req }) => {
